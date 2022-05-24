@@ -56,8 +56,8 @@ func GetSignature(input, key string) string {
 }
 func buildStringToSign(method, input string) string {
 	filter := strings.Replace(input, "+", "%20", -1)
-	filter = strings.Replace(filter, "%7E", "~", -1)
 	filter = strings.Replace(filter, "*", "%2A", -1)
+	filter = strings.Replace(filter, "%7E", "~", -1)
 	filter = method + "&%2F&" + url.QueryEscape(filter)
 	return filter
 }
@@ -87,6 +87,8 @@ func (s Scanner) FromData(ctx context.Context, verify bool, data []byte) (result
 			}
 
 			if verify {
+				timeout := 10 * time.Second
+				client.Timeout = timeout
 				req, err := http.NewRequestWithContext(ctx, "GET", "http://ecs.aliyuncs.com/?", nil)
 				if err != nil {
 					continue
